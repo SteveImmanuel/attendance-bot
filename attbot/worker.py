@@ -19,6 +19,10 @@ class Worker(threading.Thread):
         self.last_day = datetime.now(self.tz).weekday()
 
     def run(self):
+        logger.info('Worker: Initializing database')
+        self.db_client.exec_sql_file('attbot/telebot.db')
+        logger.info('Worker: Database initialization success')
+
         while True:
             logger.info('Worker: Querying Database')
             event = self.db_client.get_current_events()
@@ -40,6 +44,7 @@ class Worker(threading.Thread):
 
             self.current_day = datetime.now(self.tz).weekday()
             if self.current_day != self.last_day:
+                logger.info('Worker: Day changed, resetting all event')
                 self.last_day = self.current_day
                 self.db_client.reset_all_events()
             
