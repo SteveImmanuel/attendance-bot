@@ -13,6 +13,7 @@ protobuf==3.13.0
 pylint==2.6.0
 pyTelegramBotAPI==3.7.3
 python-dotenv==0.14.0
+pytz==2020.1
 regex==2020.7.14
 requests==2.24.0
 six==1.15.0
