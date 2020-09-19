@@ -1,5 +1,6 @@
 import threading
 import time
+import os
 import pytz
 from datetime import datetime
 from telebot import logger
@@ -12,7 +13,7 @@ class Worker(threading.Thread):
     def __init__(self, callback):
         threading.Thread.__init__(self)
         self.callback = callback
-        self.tz = pytz.timezone('Asia/Jakarta')
+        self.tz = pytz.timezone(os.getenv('TZ'))
         self.db_client = DatabaseClient.get_instance()
         self.current_day = datetime.now(self.tz).weekday()
         self.last_day = datetime.now(self.tz).weekday()
@@ -42,4 +43,4 @@ class Worker(threading.Thread):
                 self.last_day = self.current_day
                 self.db_client.reset_all_events()
             
-            time.sleep(3)
+            time.sleep(int(os.getenv('SLEEP_INTERVAL')))
