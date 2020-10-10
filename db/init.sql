@@ -44,6 +44,30 @@ INSERT INTO `events` VALUES (1,'NLP',2,'10:00:00','12:00:00',0),(2,'PAT',2,'15:0
 UNLOCK TABLES;
 
 --
+-- Table structure for table `ot_events`
+--
+
+DROP TABLE IF EXISTS `ot_events`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `ot_events` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `event_name` varchar(50) DEFAULT NULL,
+  `start_time` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ot_events`
+--
+
+LOCK TABLES `ot_events` WRITE;
+/*!40000 ALTER TABLE `ot_events` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ot_events` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `users`
 --
 
@@ -53,10 +77,9 @@ DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `id` int NOT NULL AUTO_INCREMENT,
   `chat_id` int DEFAULT NULL,
-  `is_subscribe` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `chat_id` (`chat_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -77,4 +100,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-09-19 14:11:59
+-- Dump completed on 2020-10-10 22:43:56
