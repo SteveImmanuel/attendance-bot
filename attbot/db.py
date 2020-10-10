@@ -15,13 +15,14 @@ class DatabaseClient:
             raise Exception('Only allowed 1 instance')
         else:
             DatabaseClient.__instance = self
-            self.connector = mysql.connector.connect(host=os.getenv('DB_HOST'),
-                                                     user=os.getenv('DB_USERNAME'),
-                                                     password=os.getenv('DB_PASSWORD'),
-                                                     port=int(os.getenv('DB_PORT')),
-                                                     database=os.getenv('DB_NAME'),
-                                                     pool_size=int(os.getenv('DB_POOL_SIZE')),
-                                                     pool_name=os.getenv('DB_POOL_NAME'))
+            self.connector = mysql.connector.connect(
+                host=os.getenv('DB_HOST'),
+                user=os.getenv('DB_USERNAME'),
+                password=os.getenv('DB_PASSWORD'),
+                port=int(os.getenv('DB_PORT')),
+                database=os.getenv('DB_NAME'),
+                pool_size=int(os.getenv('DB_POOL_SIZE')),
+                pool_name=os.getenv('DB_POOL_NAME'))
 
             self.cursor = self.connector.cursor()
             self.tz = pytz.timezone(os.getenv('TZ'))
@@ -71,24 +72,6 @@ class DatabaseClient:
             return True
         except Exception:
             return False
-
-    def exec_sql_file(self, path_to_sql_file):
-        statement = ""
-
-        for line in open(path_to_sql_file):
-            if re.match(r'--', line):  
-                continue
-            if not re.search(r';$', line):
-                statement = statement + line
-            else:  
-                statement = statement + line
-                try:
-                    self.cursor.execute(statement)
-                except (OperationalError, ProgrammingError) as e:
-                    pass
-                statement = ""
-        self.connector.commit()
-        
 
     @staticmethod
     def get_instance():

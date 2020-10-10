@@ -29,4 +29,6 @@ services:
             MYSQL_ROOT_PASSWORD: $DB_PASSWORD
             MYSQL_DATABASE: $DB_NAME
             TZ: $TZ
+        volumes:
+            - ./db:/docker-entrypoint-initdb.d
         command: --default-authentication-plugin=mysql_native_password

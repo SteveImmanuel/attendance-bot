@@ -20,7 +20,7 @@ In order to use this bot, first configure the environment variables. See the `.e
 
 To configure the bot messages, open the `messages.py` file in the `attbot` directory and make all the changes.
 
-Right now, all the events are still hardcoded in the database. You can insert or delete them by changing the `telebot.db` file in the `attbot` directory. Just make sure you don't change the schema.
+Right now, all the events are still hardcoded in the database. You can insert or delete them by changing the `init.sql` file in the `db` directory. Just make sure you don't change the schema.
 
 ## Deployment
 First make sure you have docker and docker-compose installed on your machine since it will make this process very easy.

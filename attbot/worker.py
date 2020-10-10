@@ -19,9 +19,7 @@ class Worker(threading.Thread):
         self.last_day = datetime.now(self.tz).weekday()
 
     def run(self):
-        logger.info('Worker: Initializing database')
-        self.db_client.exec_sql_file('attbot/telebot.db')
-        logger.info('Worker: Database initialization success')
+        logger.info('Worker: Database connected')
 
         while True:
             logger.info('Worker: Querying Database')
