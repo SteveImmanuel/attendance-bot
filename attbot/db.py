@@ -29,16 +29,21 @@ class DatabaseClient:
 
     def get_current_events(self):
         now = datetime.now(self.tz)
+        result = []
 
         # hasn't handle intersecting event, assumes result always return 1 event
-        query = 'SELECT * FROM events WHERE day_of_week = %s AND start_time <= NOW() AND end_time >= NOW() AND has_sent = %s'
+        query = 'SELECT id, event_name, \'regular\' FROM events WHERE day_of_week = %s AND start_time <= NOW() AND end_time >= NOW() AND has_sent = %s'
         self.cursor.execute(query, (now.weekday(), False))
-        result = self.cursor.fetchone()
+        result = self.cursor.fetchall()
 
-        return result
+        ot_query = 'SELECT id, event_name, \'onetime\' FROM ot_events WHERE start_time <= NOW()'
+        self.cursor.execute(ot_query)
+        ot_result = self.cursor.fetchall()
 
-    def get_all_subscribed_users(self):
-        query = 'SELECT chat_id FROM users WHERE is_subscribe = true'
+        return [*result, *ot_result]
+
+    def get_all_users(self):
+        query = 'SELECT chat_id FROM users'
         self.cursor.execute(query)
         result = self.cursor.fetchall()
 
@@ -57,7 +62,7 @@ class DatabaseClient:
 
     def add_user(self, chat_id):
         try:
-            query = 'INSERT INTO users VALUES (NULL, %s, true)'
+            query = 'INSERT INTO users VALUES (NULL, %s)'
             self.cursor.execute(query, (chat_id, ))
             self.connector.commit()
             return True
@@ -72,6 +77,20 @@ class DatabaseClient:
             return True
         except Exception:
             return False
+
+    def add_ot_event(self, event_name, date_time):
+        try:
+            query = 'INSERT INTO ot_events VALUES (NULL, %s, %s)'
+            self.cursor.execute(query, (event_name, date_time))
+            self.connector.commit()
+            return True
+        except IntegrityError:
+            return False
+
+    def remove_ot_event(self, event):
+        query = 'DELETE FROM ot_events WHERE id = %s'
+        self.cursor.execute(query, (event[0], ))
+        self.connector.commit()
 
     @staticmethod
     def get_instance():

@@ -6,7 +6,7 @@ from datetime import datetime
 from telebot import logger
 
 from attbot.db import DatabaseClient
-from attbot.messages import NOTIF
+from attbot.messages import NOTIF, OT_NOTIF
 
 
 class Worker(threading.Thread):
@@ -23,19 +23,26 @@ class Worker(threading.Thread):
 
         while True:
             logger.info('Worker: Querying Database')
-            event = self.db_client.get_current_events()
+            events = self.db_client.get_current_events()
             
-            if event:
-                event_name = event[1]
-                users = self.db_client.get_all_subscribed_users()
-                users = [user[0] for user in users]
+            if len(events) > 0:
+                for event in events:
+                    event_type = event[2]
+                    event_name = event[1]
+                    users = self.db_client.get_all_users()
+                    users = [user[0] for user in users]
 
-                logger.info('Worker: Sending notification to all subscribed users')
-                for user in users:
-                    self.callback(user, NOTIF.format(event_name))
+                    message = NOTIF if event_type == 'regular' else OT_NOTIF
 
-                self.db_client.set_event_sent(event)
-                logger.info('Worker: Successfully processed event')
+                    logger.info('Worker: Sending notification to all subscribed users')
+                    for user in users:
+                        self.callback(user, message.format(event_name))
+
+                    if event_type == 'regular':
+                        self.db_client.set_event_sent(event)
+                    else:
+                        self.db_client.remove_ot_event(event)
+                    logger.info('Worker: Successfully processed event')
 
             else:
                 logger.info('Worker: No ongoing event')

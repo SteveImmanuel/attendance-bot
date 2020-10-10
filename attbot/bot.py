@@ -2,6 +2,7 @@ import telebot
 import logging
 import os
 
+from datetime import datetime
 from dotenv import load_dotenv
 from attbot.worker import Worker
 from attbot.db import DatabaseClient
@@ -40,9 +41,33 @@ def unregister_user(message):
         bot.send_message(message.chat.id, UNSUB_FAIL)
 
 
-@bot.message_handler(func=lambda message: True)
-def echo(message):
-    bot.reply_to(message, message.text)
+@bot.message_handler(commands=['once'])
+def remind_once(message):
+    user_text = message.text
+    user_text = user_text.split(' ')
+
+    if len(user_text) >= 3:
+        now = datetime.now()
+        event_name = ' '.join(user_text[1:-1])
+        str_time = user_text[-1]
+        try:
+            temp = datetime.strptime(str_time, '%H:%M')
+            event_time = now.replace(hour=temp.hour,
+                                     minute=temp.minute,
+                                     second=0)
+            if event_time > now:
+                if db_client.add_ot_event(event_name, event_time):
+                    bot.send_message(message.chat.id, OT_SUCCESS)
+                else:
+                    bot.send_message(message.chat.id, OT_FAIL)
+
+            else:
+                bot.send_message(message.chat.id, TIME_PASSED_ERROR)
+        except Exception as e:
+            telebot.logger.error(e)
+            bot.send_message(message.chat.id, WRONG_TIME)
+    else:
+        bot.send_message(message.chat.id, WRONG_FORMAT)
 
 
 def push_message(chat_id, message):
