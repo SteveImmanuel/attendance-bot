@@ -1,4 +1,4 @@
-HELP='Saya bisa bantuin lo ingetin absen di SIX. /subscribe buat dapet notif'
+HELP='Gw bisa bantuin lo ingetin absen di SIX. /subscribe buat dapet notif'
 START='Pastiin lo udh subscribe pake /subscribe'
 SUBSCRIBE_SUCC='Subscribe berhasil. Tar gw ingetin absen kalo udh waktunya'
 SUBSCRIBE_FAIL='Lo udh subscribe ngapain subscribe lagi bang'
