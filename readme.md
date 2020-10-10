@@ -6,7 +6,7 @@ Simple telegram bot to remind checking attendance. Personally helpful because si
 - `/help`, shows how to use
 - `/subscribe`, register to receive all notifications
 - `/unsubscribe`, unregister to remove all notifications
-
+- `/once`, register a one-time event with format. The format is `/once <event_name> <event_time>`. `<event_name>` can be a long string, while `<event_time>` must be in HH:MM 24-hour clock format
 All the messages can be configured. See `Configuration` section.
 
 ## Configurations
