@@ -12,13 +12,15 @@ services:
         environment:
             - WAIT_HOSTS=$DB_HOST:3306
             - WAIT_HOSTS_TIMEOUT=300
-            - WAIT_SLEEP_INTERVAL=30
+            - WAIT_SLEEP_INTERVAL=15
             - WAIT_HOST_CONNECT_TIMEOUT=30
         links: 
             - attbot_db
         depends_on: 
             - attbot_db
-        command: sh -c "/wait && python -m attbot.bot"
+        command: sh -c "/wait && gunicorn --certfile=cert/webhook_cert.pem --keyfile=cert/webhook_pkey.pem --bind $WEBHOOK_LISTEN:$WEBHOOK_PORT attbot:app"
+        ports: 
+            - 8443:8443
   
     attbot_db:
         image: mysql
