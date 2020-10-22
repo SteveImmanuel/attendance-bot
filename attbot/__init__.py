@@ -2,6 +2,7 @@ import flask
 import os
 
 from dotenv import load_dotenv
+from telebot import logger
 from attbot.worker import Worker
 from attbot.db import DatabaseClient
 from attbot.bot import bot, bot_bp, push_message, WEBHOOK_PATH
@@ -20,9 +21,14 @@ def create_app():
     app.register_blueprint(bot_bp)
     db_client = DatabaseClient.get_instance()
 
+    logger.info('Removing old webhook')
     # bot.remove_webhook()
     # bot.set_webhook(url=WEBHOOK_URL, certificate=open(WEBHOOK_SSL_CERT, 'r'))
+    logger.info('Successfully register new webhook')
 
     query_worker = Worker(push_message)
     query_worker.start()
     return app
+
+
+app = create_app()
