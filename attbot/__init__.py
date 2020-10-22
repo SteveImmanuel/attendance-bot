@@ -22,8 +22,8 @@ def create_app():
     db_client = DatabaseClient.get_instance()
 
     logger.info('Removing old webhook')
-    # bot.remove_webhook()
-    # bot.set_webhook(url=WEBHOOK_URL, certificate=open(WEBHOOK_SSL_CERT, 'r'))
+    bot.remove_webhook()
+    bot.set_webhook(url=WEBHOOK_URL, certificate=open(WEBHOOK_SSL_CERT, 'r'))
     logger.info('Successfully register new webhook')
 
     query_worker = Worker(push_message)
