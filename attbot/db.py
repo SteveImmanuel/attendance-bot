@@ -15,14 +15,13 @@ class DatabaseClient:
             raise Exception('Only allowed 1 instance')
         else:
             DatabaseClient.__instance = self
-            self.connector = mysql.connector.connect(
-                host=os.getenv('DB_HOST'),
-                user=os.getenv('DB_USERNAME'),
-                password=os.getenv('DB_PASSWORD'),
-                port=int(os.getenv('DB_PORT')),
-                database=os.getenv('DB_NAME'),
-                pool_size=int(os.getenv('DB_POOL_SIZE')),
-                pool_name=os.getenv('DB_POOL_NAME'))
+            self.connector = mysql.connector.connect(host=os.getenv('DB_HOST'),
+                                                     user=os.getenv('DB_USERNAME'),
+                                                     password=os.getenv('DB_PASSWORD'),
+                                                     port=int(os.getenv('DB_PORT')),
+                                                     database=os.getenv('DB_NAME'),
+                                                     pool_size=int(os.getenv('DB_POOL_SIZE')),
+                                                     pool_name=os.getenv('DB_POOL_NAME'))
 
             self.cursor = self.connector.cursor()
             self.tz = pytz.timezone(os.getenv('TZ'))

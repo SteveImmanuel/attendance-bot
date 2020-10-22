@@ -37,16 +37,19 @@ def webhook():
 
 @bot.message_handler(commands=['help'])
 def send_help(message):
+    telebot.logger.info('Receive message /help')
     bot.reply_to(message, HELP)
 
 
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
+    telebot.logger.info('Receive message /start')
     bot.reply_to(message, START)
 
 
 @bot.message_handler(commands=['subscribe'])
 def register_user(message):
+    telebot.logger.info('Receive message /subscribe')
     if db_client.add_user(message.chat.id):
         bot.send_message(message.chat.id, SUBSCRIBE_SUCC)
     else:
@@ -55,6 +58,7 @@ def register_user(message):
 
 @bot.message_handler(commands=['unsubscribe'])
 def unregister_user(message):
+    telebot.logger.info('Receive message /unsubscribe')
     if db_client.remove_user(message.chat.id):
         bot.send_message(message.chat.id, UNSUB_SUCC)
     else:
@@ -63,6 +67,7 @@ def unregister_user(message):
 
 @bot.message_handler(commands=['once'])
 def remind_once(message):
+    telebot.logger.info('Receive message /once')
     user_text = message.text
     user_text = user_text.split(' ')
 
@@ -89,4 +94,5 @@ def remind_once(message):
 
 
 def push_message(chat_id, message):
+    telebot.logger.info(f'Sending push message to {chat_id}')
     bot.send_message(chat_id, message)

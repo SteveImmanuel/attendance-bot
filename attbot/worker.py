@@ -19,7 +19,7 @@ class Worker(threading.Thread):
         self.last_day = datetime.now(self.tz).weekday()
 
     def run(self):
-        logger.info('Worker: Database connected')
+        logger.info('Database connected')
         while True:
             events = self.db_client.get_current_events()
 
@@ -32,7 +32,7 @@ class Worker(threading.Thread):
 
                     message = NOTIF if event_type == 'regular' else OT_NOTIF
 
-                    logger.info('Worker: Sending notification to all subscribed users')
+                    logger.info('Sending notification to all subscribed users')
                     try:
                         for user in users:
                             self.callback(user, message.format(event_name))
@@ -41,16 +41,16 @@ class Worker(threading.Thread):
                             self.db_client.set_event_sent(event)
                         else:
                             self.db_client.remove_ot_event(event)
-                        logger.info('Worker: Successfully processed event')
+                        logger.info('Successfully processed event')
                     except Exception as e:
                         logger.error(str(e))
 
             else:
-                logger.info('Worker: No ongoing event')
+                logger.info('No ongoing event')
 
             self.current_day = datetime.now(self.tz).weekday()
             if self.current_day != self.last_day:
-                logger.info('Worker: Day changed, resetting all event')
+                logger.info('Day changed, resetting all event')
                 self.last_day = self.current_day
                 self.db_client.reset_all_events()
 
