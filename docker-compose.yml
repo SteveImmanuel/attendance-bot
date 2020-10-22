@@ -18,7 +18,7 @@ services:
             - attbot_db
         depends_on: 
             - attbot_db
-        command: sh -c "/wait && gunicorn --certfile=cert/webhook_cert.pem --keyfile=cert/webhook_pkey.pem --bind $WEBHOOK_LISTEN:$WEBHOOK_PORT attbot:app"
+        command: sh -c "/wait && gunicorn --certfile=cert/webhook_cert.pem --keyfile=cert/webhook_pkey.pem --bind $WEBHOOK_LISTEN:$WEBHOOK_PORT attbot:app --timeout 90"
         ports: 
             - 8443:8443
   
