@@ -11,7 +11,7 @@ load_dotenv()
 WEBHOOK_HOST = os.getenv('WEBHOOK_HOST')
 WEBHOOK_PORT = os.getenv('WEBHOOK_PORT')
 WEBHOOK_LISTEN = os.getenv('WEBHOOK_LISTEN')
-WEBHOOK_URL = f'https://{WEBHOOK_HOST}:{WEBHOOK_PORT}/{WEBHOOK_PATH}'
+WEBHOOK_URL = f'https://{WEBHOOK_HOST}:{WEBHOOK_PORT}{WEBHOOK_PATH}'
 WEBHOOK_SSL_CERT = 'cert/webhook_cert.pem'
 WEBHOOK_SSL_PRIV = 'cert/webhook_pkey.pem'
 
