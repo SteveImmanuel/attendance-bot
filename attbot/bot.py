@@ -1,18 +1,38 @@
 import telebot
 import logging
 import os
+import flask
 
 from datetime import datetime
 from dotenv import load_dotenv
-from attbot.worker import Worker
+from flask import Response, Blueprint
 from attbot.db import DatabaseClient
 from attbot.messages import *
 
+bot_bp = Blueprint('bot', __name__)
+
 load_dotenv()
 API_TOKEN = os.getenv('API_TOKEN')
+WEBHOOK_PATH = f'/{API_TOKEN}'
 db_client = DatabaseClient.get_instance()
 bot = telebot.TeleBot(API_TOKEN)
 logger = telebot.logger.setLevel(logging.INFO)
+
+
+@bot_bp.route('/check', methods=['GET'])
+def heath_check():
+    return Response('Running smoothly', 200)
+
+
+@bot_bp.route(WEBHOOK_PATH, methods=['POST'])
+def webhook():
+    if flask.request.headers.get('content-type') == 'application/json':
+        json_string = flask.request.get_data().decode('utf-8')
+        update = telebot.types.Update.de_json(json_string)
+        bot.process_new_updates([update])
+        return ''
+    else:
+        flask.abort(403)
 
 
 @bot.message_handler(commands=['help'])
@@ -52,9 +72,7 @@ def remind_once(message):
         str_time = user_text[-1]
         try:
             temp = datetime.strptime(str_time, '%H:%M')
-            event_time = now.replace(hour=temp.hour,
-                                     minute=temp.minute,
-                                     second=0)
+            event_time = now.replace(hour=temp.hour, minute=temp.minute, second=0)
             if event_time > now:
                 if db_client.add_ot_event(event_name, event_time):
                     bot.send_message(message.chat.id, OT_SUCCESS)
@@ -72,9 +90,3 @@ def remind_once(message):
 
 def push_message(chat_id, message):
     bot.send_message(chat_id, message)
-
-
-if __name__ == "__main__":
-    query_worker = Worker(push_message)
-    query_worker.start()
-    bot.polling()

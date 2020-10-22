@@ -20,7 +20,6 @@ class Worker(threading.Thread):
 
     def run(self):
         logger.info('Worker: Database connected')
-
         while True:
             events = self.db_client.get_current_events()
 
