@@ -22,9 +22,8 @@ class Worker(threading.Thread):
         logger.info('Worker: Database connected')
 
         while True:
-            logger.info('Worker: Querying Database')
             events = self.db_client.get_current_events()
-            
+
             if len(events) > 0:
                 for event in events:
                     event_type = event[2]
@@ -35,14 +34,17 @@ class Worker(threading.Thread):
                     message = NOTIF if event_type == 'regular' else OT_NOTIF
 
                     logger.info('Worker: Sending notification to all subscribed users')
-                    for user in users:
-                        self.callback(user, message.format(event_name))
+                    try:
+                        for user in users:
+                            self.callback(user, message.format(event_name))
 
-                    if event_type == 'regular':
-                        self.db_client.set_event_sent(event)
-                    else:
-                        self.db_client.remove_ot_event(event)
-                    logger.info('Worker: Successfully processed event')
+                        if event_type == 'regular':
+                            self.db_client.set_event_sent(event)
+                        else:
+                            self.db_client.remove_ot_event(event)
+                        logger.info('Worker: Successfully processed event')
+                    except Exception as e:
+                        logger.error(str(e))
 
             else:
                 logger.info('Worker: No ongoing event')
@@ -52,5 +54,5 @@ class Worker(threading.Thread):
                 logger.info('Worker: Day changed, resetting all event')
                 self.last_day = self.current_day
                 self.db_client.reset_all_events()
-            
+
             time.sleep(int(os.getenv('SLEEP_INTERVAL')))
